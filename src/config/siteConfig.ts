@@ -25,45 +25,36 @@ const pages = resolvePageToggles({
 	gallery: true,
 	// 书签导航页面开关
 	booknav: true,
-	// 哔哩哔哩追番页面开关
-	bilibili: false,
-	// 番组计划页面开关
-	bangumi: false,
-	// VNDB页面开关
-	vndb: false,
-	// MyAnimeList页面开关
-	mal: false,
+	// 哔哩哔哩追番页面开关（需在下方 bilibili.uid 填写你的 UID 才能显示数据）
+	bilibili: true,
+	// 番组计划页面开关（需在下方 bangumi.userId 填写你的账号）
+	bangumi: true,
+	// VNDB页面开关（需在下方 vndb.userId 填写你的账号）
+	vndb: true,
+	// MyAnimeList页面开关（需在下方 mal 填写用户名和 Client ID）
+	mal: true,
 
 	// ── 关于 (About) ──────────────────────────────────
 
 	// 打赏页面开关
-	sponsor: true,
+	sponsor: false,
 });
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "Firefly",
+	title: "温水煮冷水",
 
 	// 站点副标题
-	subtitle: "Demo site",
+	subtitle: "咕嘟咕嘟~",
 
 	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: "https://05221024.xyz",
 
 	// 站点描述
-	description:
-		"Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。该主题融合了现代 Web 技术栈，提供了丰富的功能模块和高度可定制的界面，让您能够轻松打造出专业且美观的个人博客网站。",
+	description: "这里神马都有但又什么都没有...",
 
 	// 站点关键词
-	keywords: [
-		"Firefly",
-		"Fuwari",
-		"Astro",
-		"ACGN",
-		"博客",
-		"技术博客",
-		"静态博客",
-	],
+	keywords: ["博客", "随笔", "生活"],
 
 	// 主题色
 	themeColor: {
@@ -91,11 +82,15 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			// 图标文件路径
-			src: "/favicon/firefly-32.png",
+			src: "/favicon/favicon-32.png",
 			// 可选，指定主题 'light' | 'dark'
 			// theme: "light",
 			// 可选，图标大小
-			// sizes: "32x32",
+			sizes: "32x32",
+		},
+		{
+			src: "/favicon/favicon-192.png",
+			sizes: "192x192",
 		},
 	],
 
@@ -111,13 +106,11 @@ export const siteConfig: SiteConfig = {
 		// 例如: { type: "image", value: "assets/images/logo.png", valueDark: "assets/images/logo-dark.png", alt: "Logo" }
 		// 使用 Astro 图标库时不需要设置 valueDark，图标会自动跟随主题亮暗色切换
 		logo: {
-			type: "image",
-			value: "assets/images/logo/firefly-light.png",
-			valueDark: "assets/images/logo/firefly-dark.png",
-			alt: "🍀",
+			type: "icon",
+			value: "material-symbols:home-pin-outline-rounded",
 		},
 		// 导航栏标题
-		title: "Firefly Blog",
+		title: "温水煮冷水",
 		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中
@@ -132,7 +125,7 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// 站点开始日期，用于统计运行天数
-	siteStartDate: "2025-01-01",
+	siteStartDate: "2026-10-22",
 
 	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
 	// 示例："Asia/Shanghai", "UTC", 如果为空，则按照构建服务器的时区进行时区转换
@@ -260,15 +253,17 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// ── Bilibili配置 ──────────────────────────────────
+	// 填写你的 Bilibili 用户 UID
 	bilibili: {
 		// 你的 Bilibili 用户 UID
-		uid: "38932988",
+		uid: "438980226",
 	},
 
 	// ── 番组计划bangumi配置 ──────────────────────────────────
+	// 填写你的 Bangumi 用户 ID；为空时页面会提示未配置
 	bangumi: {
 		// Bangumi用户ID
-		userId: "1143164",
+		userId: "",
 		// 数据模式：static=构建时获取，dynamic=客户端实时获取
 		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
@@ -290,9 +285,10 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// ── VNDB配置 ──────────────────────────────────
+	// 填写你的 VNDB 用户 ID；为空时页面会提示未配置
 	vndb: {
 		// VNDB 用户 ID
-		userId: "u358128",
+		userId: "",
 		// 数据模式：static=构建时获取，dynamic=客户端实时获取
 		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据
@@ -310,11 +306,12 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// ── MyAnimeList配置 ──────────────────────────────────
+	// 填写你的 MAL 用户名和 Client ID；为空时页面会提示未配置
 	mal: {
 		// MyAnimeList 用户名（列表需为公开状态，私密列表无法读取）
-		username: "cuteleaf",
+		username: "",
 		// MyAnimeList Client ID，在 https://myanimelist.net/apiconfig 注册免费应用后获取
-		clientId: "	0ef34371450f9c6c809deaadec6aa8f3",
+		clientId: "",
 		// MAL API 地址
 		apiUrl: "https://api.myanimelist.net/v2",
 		// 动画条目详情页地址，末尾需要带 /
