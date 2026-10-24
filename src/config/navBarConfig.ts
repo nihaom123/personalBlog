@@ -16,6 +16,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 主页
 	links.push(LinkPresets.Home);
 
+	// 博客文章列表
+	links.push({
+		name: "博客",
+		url: "/blog/",
+		icon: "material-symbols:article",
+	});
+
 	// 文章及其子菜单
 	links.push({
 		name: "文章",

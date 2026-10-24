@@ -137,6 +137,10 @@ const {
                 {/* 为每个页面提供一个隐藏的h1标题，用于SEO和可访问性 */}
                 <h1 class="sr-only">{heading || title}</h1>
                 <div id="content-wrapper" class="onload-animation transition-leaving">
+                    {/* 纯色背景模式下横幅不再承载页面标题，这里补一个浮在背景上的标题 */}
+                    {!isPostPage && (title || heading) && (
+                        <div class="page-hero-title">{title || heading}</div>
+                    )}
                     <slot></slot>
                 </div>
             </main>
