@@ -5,7 +5,7 @@ description: 外卖签到、阅读签到、运动签到、连买菜都要签到�
 image: ""
 tags: ["App观察", "签到", "搞怪"]
 category: 热点搞怪
-draft: true
+draft: false
 lang: ""
 ---
 

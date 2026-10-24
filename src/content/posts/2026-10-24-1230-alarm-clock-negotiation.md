@@ -5,7 +5,7 @@ description: 我把闹钟从七点调到七点十分，又调到七点二十。�
 image: ""
 tags: ["生活记录", "睡眠", "自我调侃"]
 category: 生活随笔
-draft: true
+draft: false
 lang: ""
 ---
 
