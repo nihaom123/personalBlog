@@ -1,0 +1,9 @@
+{
+	"timezone": "Asia/Shanghai",
+	"batches": [
+		{ "id": "morning", "time": "07:30", "count": 3 },
+		{ "id": "noon", "time": "12:30", "count": 4 },
+		{ "id": "evening", "time": "20:30", "count": 3 }
+	],
+	"categories": ["热点搞怪", "生活随笔", "技术折腾", "二次元"]
+}
