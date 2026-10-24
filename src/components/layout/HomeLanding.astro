@@ -260,7 +260,9 @@ const pixels = Array.from({ length: pixelCols * pixelRows }, (_, index) => {
 		}
 
 		render();
-		setInterval(render, 1000);
+		// Swup 每次切回首页都会重跑本脚本：先清掉上一次的计时器，避免越积越多
+		if (window.__homeRuntimeTimer) clearInterval(window.__homeRuntimeTimer);
+		window.__homeRuntimeTimer = setInterval(render, 1000);
 	})();
 </script>
 

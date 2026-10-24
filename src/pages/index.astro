@@ -1,8 +1,11 @@
 ---
 import HomeLanding from "@/components/layout/HomeLanding.astro";
-import Layout from "@/layouts/Layout.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
 ---
 
-<Layout>
+{/* 首页必须复用 MainGridLayout 的外壳：Swup 容器（#swup-container 等）要在所有页面一致，
+    否则切页时 Swup 会判定容器不匹配并退化成整页刷新（表现为明显卡顿）。
+    外壳中的导航栏/侧栏/页脚在 body.is-home 下由 site-theme.css 隐藏，保留落地页视觉。 */}
+<MainGridLayout>
 	<HomeLanding />
-</Layout>
+</MainGridLayout>

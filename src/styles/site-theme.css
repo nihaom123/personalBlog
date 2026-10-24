@@ -24,15 +24,24 @@
 	--content-meta: rgba(238, 242, 255, 0.7);
 }
 
-/* 固定全屏背景图 */
+/* 固定全屏背景图。
+   用 fixed 伪元素而不是 background-attachment: fixed：后者在滚动/切页时会
+   反复重绘整张大图（Windows Chromium 尤其明显），是卡顿主因之一。 */
 html {
 	background-color: #15202f !important;
+}
+
+html::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
 	background-image:
 		linear-gradient(rgba(8, 12, 22, 0.4), rgba(8, 12, 22, 0.62)),
 		url("/assets/images/home-bg.jpg");
 	background-position: center;
 	background-size: cover;
-	background-attachment: fixed;
 	background-repeat: no-repeat;
 }
 
@@ -100,6 +109,36 @@ body {
 
 .site-footer .link {
 	color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* ============================================================
+ * 首页（个人主页）
+ * 首页复用 MainGridLayout 的外壳以保证 Swup 容器跨页一致，
+ * 这里把外壳中不需要的部分隐藏，保留原来的落地页视觉。
+ * 用 body.is-home 驱动：Swup 切页时切换该类，外壳随之显隐，
+ * 无需整页重载。
+ * ============================================================ */
+body.is-home #top-row,
+body.is-home #main-grid > #left-sidebar-wrapper,
+body.is-home #main-grid > #left-sidebar-dynamic,
+body.is-home #main-grid > #right-sidebar-static,
+body.is-home #main-grid > #right-sidebar-dynamic,
+body.is-home #mobile-bottom-sidebar,
+body.is-home #category-bar-wrapper,
+body.is-home #content-panel-inner > .site-footer,
+body.is-home .floating-controls-container {
+	display: none !important;
+}
+
+/* 侧栏列隐藏后把网格收敛成单列，避免内容落进 17.5rem 的侧栏轨道 */
+body.is-home #main-grid {
+	grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* 首页没有导航栏，抵消纯色模式默认的 5.5rem 顶部偏移（落地页自带 68px 留白） */
+html[data-wallpaper-mode="none"] body.is-home #content-panel {
+	top: 0 !important;
+	min-height: 100vh !important;
 }
 
 /* 文章正文卡片适当提高不透明度，保证长文阅读舒适度 */
