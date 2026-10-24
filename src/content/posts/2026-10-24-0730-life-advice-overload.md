@@ -1,11 +1,11 @@
 ---
 title: 全网都在教我怎么生活，我只想安静地把外卖点错
-published: 2026-10-26T07:30:00+08:00
+published: 2026-10-24T07:30:00+08:00
 description: 刷十条内容，八条在教我怎么起床、怎么喝水、怎么管理人生。看得越多，越不会过日子。
 image: ""
 tags: ["微博热搜", "生活方式", "搞怪"]
 category: 热点搞怪
-draft: true
+draft: false
 lang: ""
 ---
 

@@ -1,11 +1,11 @@
 ---
 title: 热搜榜的一天：十个瓜，一个也记不住
-published: 2026-10-26T07:30:00+08:00
+published: 2026-10-24T07:30:00+08:00
 description: 早上刷热搜像开会，晚上复盘发现全场只记住了一个表情包。这不是我的问题，是瓜太多了。
 image: ""
 tags: ["微博热搜", "网络观察", "搞怪"]
 category: 热点搞怪
-draft: true
+draft: false
 lang: ""
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: 给博客配了个自动发布机器人，它比我准时
-published: 2026-10-26T20:30:00+08:00
+published: 2026-10-24T20:30:00+08:00
 description: 我用 GitHub Actions 加一个百来行的脚本，让博客每天自己更新。结果第一个被我自动化掉的，是我的拖延。
 image: ""
 tags: ["Astro", "GitHub Actions", "自动化", "博客"]
