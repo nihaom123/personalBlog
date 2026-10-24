@@ -5,7 +5,7 @@ description: 我用 GitHub Actions 加一个百来行的脚本，让博客每天
 image: ""
 tags: ["Astro", "GitHub Actions", "自动化", "博客"]
 category: 技术折腾
-draft: true
+draft: false
 lang: ""
 ---
 
