@@ -5,7 +5,7 @@ description: 灯亮着，饭团开始打折，收银员比你清醒。深夜便�
 image: ""
 tags: ["生活记录", "便利店", "深夜"]
 category: 生活随笔
-draft: true
+draft: false
 lang: ""
 ---
 
