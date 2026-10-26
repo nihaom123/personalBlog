@@ -5,14 +5,14 @@ export const announcementConfig: AnnouncementConfig = {
 	title: "",
 
 	// 公告内容
-	content: "欢迎来到温水煮冷水，咕嘟咕嘟~",
+	content: "留言有神秘大奖,没有触发的话,找胜哥,胜哥给你补",
 
 	// 是否允许用户关闭公告
 	closable: true,
 
 	link: {
 		// 启用链接
-		enable: true,
+		enable: false,
 		// 链接文本
 		text: "了解更多",
 		// 链接 URL

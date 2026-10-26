@@ -26,7 +26,7 @@
 1. 草稿与发布分离的内容目录与 frontmatter 规范。
 2. GitHub Actions 每日定时发布（早 3 / 中 4 / 晚 3）。
 3. 四栏目（热点搞怪、生活随笔、技术折腾、二次元）在站内正确归类与导航。
-4. Twikoo 评论后端（Cloudflare Worker + MongoDB Atlas）+ 前端接入。
+4. Waline 评论后端（Cloudflare Worker + D1）+ 前端接入。
 5. Cloudflare Web Analytics 接入。
 6. 首周 70 篇稿件生产（手动，无 API Key）。
 7. 一周复盘与节奏调整结论。
@@ -48,7 +48,7 @@
 | R2 | 每日三批自动发布 | 必须 | 时间可配置，失败可重试 |
 | R3 | 发布后可回滚 | 必须 | 改回 `draft: true` 或 git revert |
 | R4 | 四栏目与站内分类一致 | 必须 | 分类名与 `category` 字段严格对应 |
-| R5 | 评论可匿名提交并显示 | 必须 | Twikoo，含防垃圾 |
+| R5 | 评论可匿名提交并显示 | 必须 | Waline，含防垃圾 |
 | R6 | 访问统计可看 | 应该 | Cloudflare Web Analytics |
 | R7 | 每篇内容不触碰红线 | 必须 | 见「硬性红线」 |
 | R8 | 单篇 400–900 字、可在 3 分钟内读完 | 应该 | 移动端优先 |
@@ -88,7 +88,7 @@
 | 已上线站点（Cloudflare Worker `personalblog`） | 发布目标 | 已就绪 |
 | GitHub 仓库 `nihaom123/personalBlog` | 源码与定时任务 | 已就绪 |
 | GitHub Actions | 定时发布 | 待配置 |
-| MongoDB Atlas 集群 | Twikoo 数据存储 | 待注册 |
+| Cloudflare D1 数据库 | Waline 评论数据存储 | 已就绪 |
 | Cloudflare 账号 | Worker 部署、Analytics | 已就绪 |
 | 热搜数据源（微博/B站/知乎/抖音/百度） | 选题 | 手动抓取 |
 | 构建时长（当前 `pnpm build`） | 每日 3 次触发成本 | 需观察 |
@@ -98,13 +98,13 @@
 见 [00-project-blueprint.md](00-project-blueprint.md#关键风险与假设)，补充：
 
 - 每日 3 次构建可能触及 Cloudflare Workers Builds 的构建配额，需在试运行中确认。
-- Twikoo 的 Worker 与主站同为 Cloudflare，注意自定义域名与路由不要冲突。
+- Waline 的 Worker 与主站同为 Cloudflare，注意自定义域名与路由不要冲突。
 - 定时任务依赖 GitHub 计划任务的准点性（高峰期可能延迟数分钟至数十分钟，属正常）。
 
 ## 待确认问题
 
 1. 首周之后若产量下调，目标频率定为每天几篇？（建议先按数据决定，暂不预设）
-2. Twikoo 部署在哪个域名下（如 `twikoo.05221024.xyz`）？
+2. 评论服务部署在哪个域名下（如 `waline.05221024.xyz`）？
 3. 是否需要「发布前必须博主手动批准」的 PR 流程，还是允许直推 main？
 4. 评论是否需要登录/邮箱必填与审核模式？
 

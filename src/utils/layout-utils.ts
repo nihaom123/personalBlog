@@ -13,10 +13,41 @@ const toArray = (src: string | string[] | undefined): string[] => {
 	return [src];
 };
 
+// 归一化页面路径，统一为不带末尾斜杠的绝对路径（根路径保留 "/"）
+const normalizePagePath = (pathname: string): string => {
+	const baseUrl = import.meta.env.BASE_URL || "/";
+	let path = pathname;
+	if (baseUrl !== "/" && path.startsWith(baseUrl)) {
+		path = `/${path.slice(baseUrl.length)}`;
+	}
+	if (!path.startsWith("/")) path = `/${path}`;
+	if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+	return path;
+};
+
+// 按当前页面路径选择壁纸配置，未匹配时回退到全局 src
+const resolveWallpaperSrc = (pathname?: string) => {
+	const pages = backgroundWallpaper.pages;
+	if (!pathname || !pages) return backgroundWallpaper.src;
+
+	const targetPath = normalizePagePath(pathname);
+	let matchedKey = "";
+	for (const key of Object.keys(pages)) {
+		const pagePath = normalizePagePath(key);
+		const isMatched =
+			targetPath === pagePath ||
+			(pagePath !== "/" && targetPath.startsWith(`${pagePath}/`));
+		if (isMatched && pagePath.length > matchedKey.length) {
+			matchedKey = pagePath;
+		}
+	}
+	return matchedKey ? pages[matchedKey] : backgroundWallpaper.src;
+};
+
 // 背景图片处理工具函数
-// 返回所有配置的图片（用于构建时渲染所有图片）
-export const getBackgroundImages = (): BackgroundImages => {
-	const bgSrc = backgroundWallpaper.src;
+// 返回当前页面使用的所有图片（用于构建时渲染所有图片）
+export const getBackgroundImages = (pathname?: string): BackgroundImages => {
+	const bgSrc = resolveWallpaperSrc(pathname);
 
 	if (
 		typeof bgSrc === "object" &&

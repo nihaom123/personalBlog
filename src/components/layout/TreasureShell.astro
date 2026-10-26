@@ -1,0 +1,386 @@
+---
+import { Icon } from "astro-icon/components";
+import LightDarkSwitch from "@components/controls/LightDarkSwitch.svelte";
+import { profileConfig, siteConfig } from "@/config";
+import "@/styles/treasure-theme.css";
+
+interface Props {
+	title?: string;
+	heading?: string;
+	isPostPage?: boolean;
+	backgroundImages?: { desktop: string[]; mobile: string[] };
+	pathname?: string;
+}
+
+const {
+	title,
+	heading,
+	isPostPage = false,
+	backgroundImages,
+	pathname = Astro.url.pathname,
+} = Astro.props;
+
+const path = pathname.replace(/\/+$/, "") || "/";
+
+const pageMeta: Record<
+	string,
+	{ eyebrow: string; title: string; subtitle: string }
+> = {
+	"/blog": {
+		eyebrow: "THE BLOG",
+		title: "博客文章",
+		subtitle: "记录思考、技术与生活里的一些片段",
+	},
+	"/archive": {
+		eyebrow: "ARCHIVE & EXPLORATION",
+		title: "归档与探索",
+		subtitle: "时间会把一切都慢慢整理好",
+	},
+	"/projects": {
+		eyebrow: "PROJECTS MATRIX",
+		title: "项目矩阵",
+		subtitle: "一些正在构建、学习和反复折腾的东西",
+	},
+	"/gallery": {
+		eyebrow: "LIGHT & SHADOW",
+		title: "光影画廊",
+		subtitle: "把喜欢的瞬间留在这里",
+	},
+	"/music": {
+		eyebrow: "MUSIC & VIBES",
+		title: "音乐角落",
+		subtitle: "给耳朵一点自由的时间",
+	},
+	"/dynamic": {
+		eyebrow: "LIFE MOMENTS",
+		title: "生活动态",
+		subtitle: "一些碎片，一些心情",
+	},
+	"/friends": {
+		eyebrow: "CLOUD GRAVITY",
+		title: "云端引力",
+		subtitle: "在互联网里彼此靠近的人",
+	},
+	"/about": {
+		eyebrow: "ABOUT ME",
+		title: "关于我",
+		subtitle: profileConfig.bio || "往者不可谏，来者犹可追",
+	},
+	"/guestbook": {
+		eyebrow: "GUESTBOOK",
+		title: "留言板",
+		subtitle: "留下一点你来过的痕迹",
+	},
+	"/categories": {
+		eyebrow: "CATEGORIES",
+		title: "分类",
+		subtitle: "按主题浏览所有文章",
+	},
+	"/tags": {
+		eyebrow: "TAGS",
+		title: "标签",
+		subtitle: "按关键词找到感兴趣的内容",
+	},
+	"/booknav": {
+		eyebrow: "BOOKMARKS",
+		title: "书签导航",
+		subtitle: "我经常去的一些地方",
+	},
+	"/bilibili": {
+		eyebrow: "BILIBILI",
+		title: "追番",
+		subtitle: "最近在看的动画",
+	},
+	"/search": {
+		eyebrow: "SEARCH",
+		title: "搜索",
+		subtitle: "找到你感兴趣的内容",
+	},
+	"/sponsor": {
+		eyebrow: "SPONSOR",
+		title: "赞赏",
+		subtitle: "感谢你的支持",
+	},
+	"/series": {
+		eyebrow: "SERIES",
+		title: "系列文章",
+		subtitle: "成体系的阅读路径",
+	},
+	"/bangumi": {
+		eyebrow: "BANGUMI",
+		title: "番组计划",
+		subtitle: "我的追番与收藏",
+	},
+	"/vndb": {
+		eyebrow: "VNDB",
+		title: "视觉小说",
+		subtitle: "玩过的 Galgame 记录",
+	},
+	"/myanimelist": {
+		eyebrow: "MYANIMELIST",
+		title: "动画清单",
+		subtitle: "在 MAL 上的追番记录",
+	},
+	"/404": {
+		eyebrow: "404",
+		title: "页面走丢了",
+		subtitle: "你访问的页面不存在，换条路试试",
+	},
+};
+
+const matchedKey = Object.keys(pageMeta)
+	.filter((key) => path === key || path.startsWith(`${key}/`))
+	.sort((a, b) => b.length - a.length)[0];
+
+const meta = matchedKey
+	? pageMeta[matchedKey]
+	: {
+			eyebrow: "TREASURELAND",
+			title: heading || title || siteConfig.title,
+			subtitle: siteConfig.description,
+		};
+
+const navLinks = [
+	{ href: "/blog/", label: "博客" },
+	{ href: "/projects/", label: "项目" },
+	{ href: "/archive/", label: "归档" },
+	{ href: "/gallery/", label: "照片墙" },
+	{ href: "/music/", label: "音乐" },
+	{ href: "/dynamic/", label: "说说" },
+	{ href: "/friends/", label: "友链" },
+	{ href: "/about/", label: "关于" },
+];
+
+const isActive = (href: string) => {
+	const target = href.replace(/\/+$/, "");
+	return path === target || path.startsWith(`${target}/`);
+};
+
+const desktopBg = backgroundImages?.desktop?.[0];
+const mobileBg = backgroundImages?.mobile?.[0] || desktopBg;
+const year = new Date().getFullYear();
+const avatarChar = (profileConfig.name || siteConfig.title).trim().charAt(0);
+---
+
+<div class="treasure-page">
+	<div class="tl-bg" aria-hidden="true">
+		<picture>
+			{mobileBg && <source media="(max-width: 767px)" srcset={mobileBg} />}
+			{desktopBg && <img class="tl-bg-img" src={desktopBg} alt="" loading="eager" />}
+		</picture>
+		<div class="tl-bg-overlay"></div>
+		<div class="tl-blob tl-blob-1"></div>
+		<div class="tl-blob tl-blob-2"></div>
+		<div class="tl-blob tl-blob-3"></div>
+	</div>
+
+	<div class="tl-nav-wrap">
+		<nav class="tl-nav" aria-label="主导航">
+			<a href="/" class="tl-brand" data-no-swup aria-label={`${siteConfig.title} 首页`}>
+				<span class="tl-brand-mark">{avatarChar}</span>
+				<span class="tl-brand-text">
+					<strong>{siteConfig.title}</strong>
+					<small>{siteConfig.subtitle}</small>
+				</span>
+			</a>
+
+			<ul class="tl-nav-links">
+				{navLinks.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							class:list={["tl-nav-link", { "is-active": isActive(link.href) }]}
+							aria-current={isActive(link.href) ? "page" : undefined}
+						>
+							{link.label}
+						</a>
+					</li>
+				))}
+			</ul>
+
+			<div class="tl-nav-actions">
+				<a href="/search/" class="tl-icon-btn" aria-label="搜索" title="搜索">
+					<Icon name="material-symbols:search-rounded" />
+				</a>
+				<a href="/guestbook/" class="tl-icon-btn" aria-label="留言板" title="留言板">
+					<Icon name="material-symbols:chat-bubble-outline-rounded" />
+				</a>
+				<div class="tl-theme">
+					<LightDarkSwitch client:load />
+				</div>
+				<details class="tl-mobile">
+					<summary class="tl-icon-btn" aria-label="打开菜单">
+						<Icon name="material-symbols:menu-rounded" />
+					</summary>
+					<div class="tl-mobile-panel">
+						{navLinks.map((link) => (
+							<a
+								href={link.href}
+								class:list={["tl-mobile-link", { "is-active": isActive(link.href) }]}
+								aria-current={isActive(link.href) ? "page" : undefined}
+							>
+								{link.label}
+							</a>
+						))}
+					</div>
+				</details>
+			</div>
+		</nav>
+	</div>
+
+	<main id="swup-container" class="tl-main transition-main">
+		<h1 class="sr-only">{heading || title || meta.title}</h1>
+
+		{!isPostPage && (
+			<header class="tl-page-head">
+				<span class="tl-eyebrow">{meta.eyebrow}</span>
+				<h2 class="tl-title">{meta.title}</h2>
+				<p class="tl-subtitle">{meta.subtitle}</p>
+				<span class="tl-head-line" aria-hidden="true"></span>
+			</header>
+		)}
+
+		<div id="content-wrapper" class="onload-animation transition-leaving tl-content">
+			<slot />
+		</div>
+
+		<div id="banner-overlay-container" hidden></div>
+		<div id="banner-dim-container" hidden></div>
+		<div id="left-sidebar-dynamic" hidden></div>
+		<div id="right-sidebar-dynamic" hidden></div>
+	</main>
+
+	<footer class="tl-footer">
+		<p>
+			© {year} {siteConfig.title} · 用喜欢的方式记录生活
+		</p>
+		<p class="tl-footer-sub">
+			视觉参考
+			<a
+				href="https://github.com/heiehiehi/XinghuisamaBlogs"
+				target="_blank"
+				rel="noopener noreferrer">XinghuisamaBlogs</a
+			>
+			（CC BY-NC 4.0）
+		</p>
+	</footer>
+
+	<a href="#top" class="tl-backtop" aria-label="回到顶部" title="回到顶部">
+		<Icon name="material-symbols:arrow-upward-rounded" />
+	</a>
+</div>
+
+<script>
+	function updateTreasureState() {
+		const path = window.location.pathname.replace(/\/+$/, "") || "/";
+		const links = document.querySelectorAll(
+			".treasure-page .tl-nav-link, .treasure-page .tl-mobile-link",
+		);
+		links.forEach((link) => {
+			if (!(link instanceof HTMLAnchorElement)) {
+				return;
+			}
+			const href = new URL(link.href, window.location.origin).pathname.replace(
+				/\/+$/,
+				"",
+			);
+			const active = path === href || path.startsWith(`${href}/`);
+			link.classList.toggle("is-active", active);
+			if (active) {
+				link.setAttribute("aria-current", "page");
+			} else {
+				link.removeAttribute("aria-current");
+			}
+		});
+	}
+
+	function closeMobileMenu() {
+		document
+			.querySelectorAll(".treasure-page .tl-mobile[open]")
+			.forEach((details) => {
+				if (details instanceof HTMLDetailsElement) {
+					details.open = false;
+				}
+			});
+	}
+
+	// 参考站外壳里没有 Firefly 导航栏的那套面板脚本，主题按钮需要在这里接上：
+	// 点击展开/收起，选择主题后自动收起。用 data 标记防止 Swup 重跑时重复绑定。
+	function setupThemePanel() {
+		const trigger = document.querySelector(".treasure-page #scheme-switch");
+		const panel = document.querySelector(
+			".treasure-page #theme-mode-panel",
+		) as HTMLElement | null;
+
+		if (!(trigger instanceof HTMLElement) || !panel) {
+			return;
+		}
+		if (trigger.dataset.themePanelBound === "1") {
+			return;
+		}
+		trigger.dataset.themePanelBound = "1";
+
+		trigger.addEventListener("click", (event) => {
+			event.stopPropagation();
+			const willOpen = panel.classList.contains("float-panel-closed");
+			panel.classList.toggle("float-panel-closed", !willOpen);
+			trigger.setAttribute("aria-expanded", String(willOpen));
+		});
+
+		panel.addEventListener("click", (event) => {
+			const target = event.target;
+			if (target instanceof HTMLElement && target.closest("[role='menuitem']")) {
+				panel.classList.add("float-panel-closed");
+				trigger.setAttribute("aria-expanded", "false");
+			}
+		});
+	}
+
+	updateTreasureState();
+	setupThemePanel();
+
+	document.addEventListener("swup:page:view", () => {
+		updateTreasureState();
+		closeMobileMenu();
+	});
+
+	document.addEventListener("click", (event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLElement)) {
+			return;
+		}
+		if (target.closest(".treasure-page .tl-mobile-panel a")) {
+			closeMobileMenu();
+		}
+	});
+
+	// 首页与内页使用不同的全局外壳，跨边界时强制整页跳转，
+	// 避免 Swup 只替换内容而留下错误的导航栏。
+	document.addEventListener(
+		"click",
+		(event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) {
+				return;
+			}
+			const anchor = target.closest("a[href]");
+			if (!(anchor instanceof HTMLAnchorElement)) {
+				return;
+			}
+
+			const url = new URL(anchor.href, window.location.href);
+			if (url.origin !== window.location.origin) {
+				return;
+			}
+
+			const targetPath = url.pathname.replace(/\/+$/, "") || "/";
+			const targetIsHome = targetPath === "/";
+			const currentIsHome = window.location.pathname.replace(/\/+$/, "") === "";
+
+			if (targetIsHome !== currentIsHome) {
+				anchor.setAttribute("data-no-swup", "");
+			}
+		},
+		true,
+	);
+</script>

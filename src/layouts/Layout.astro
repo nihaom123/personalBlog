@@ -8,8 +8,10 @@ import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontSetup from "@components/features/FontSetup.astro";
 import GithubCardManager from "@components/features/GithubCardManager.astro";
 import MusicManager from "@components/features/MusicManager.astro";
+import MusicPlayerShell from "@components/features/MusicPlayerShell.svelte";
 import MusicPlayerView from "@components/features/MusicPlayerView.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
+import WallpaperEffects from "@components/features/WallpaperEffects.astro";
 import WavesEffect from "@components/features/WavesEffect.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 
@@ -162,6 +164,18 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
     <style is:inline>
 			@layer properties, theme, base, components, utilities;
 		</style>
+    <!-- 全屏壁纸揭幕：首帧前决定是否显示幕布，避免图片先闪现再被盖住 -->
+    <script is:inline>
+      (function () {
+        try {
+          if (sessionStorage.getItem("wallpaper-reveal-done")) return;
+          if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          document.documentElement.classList.add("wallpaper-reveal-pending");
+        } catch (_) {
+          /* 隐私模式下 sessionStorage 不可用，直接跳过揭幕 */
+        }
+      })();
+    </script>
     {analyticsConfig?.googleAnalyticsId && (
             <GoogleAnalytics analyticsId={analyticsConfig.googleAnalyticsId} />
     )}
@@ -557,12 +571,16 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
     <ConfigCarrier />
     <MusicManager />
     <slot />
+    <WallpaperEffects />
 
     <!-- 播放器视图脚本：必须在 <slot /> 之后（解析到它时所有 widget 的 DOM 要已存在），
          且在 MusicManager 之后（swup 重跑按文档顺序，window.__fireflyMusic 得先就位） -->
     {(musicPlayerConfig.showInNavbar || musicPlayerConfig.showInSidebar !== false) && (
       <MusicPlayerView />
     )}
+
+    <!-- 三态悬浮播放器：迷你胶囊 / 侧栏面板 / 全屏唱片，跨 Swup 页面持久存在 -->
+    <MusicPlayerShell client:load />
 
 
     <!-- Sakura Effect -->
@@ -579,6 +597,38 @@ const ogImageAlt = propsOgImageAlt ?? pageTitle;
 
     <!-- GitHub 卡片客户端实时补全（forks/stars） -->
     <GithubCardManager />
+
+    <!-- 首页与内页使用不同的全局外壳，跨边界时强制整页跳转，避免 Swup 只替换内容 -->
+    <script is:inline>
+      (function () {
+        function isHomePath(pathname) {
+          return (pathname.replace(/\/+$/, "") || "/") === "/";
+        }
+
+        document.addEventListener(
+          "click",
+          function (event) {
+            var target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            var anchor = target.closest("a[href]");
+            if (!(anchor instanceof HTMLAnchorElement)) return;
+
+            var url;
+            try {
+              url = new URL(anchor.href, window.location.href);
+            } catch (error) {
+              return;
+            }
+            if (url.origin !== window.location.origin) return;
+
+            if (isHomePath(url.pathname) !== isHomePath(window.location.pathname)) {
+              anchor.setAttribute("data-no-swup", "");
+            }
+          },
+          true,
+        );
+      })();
+    </script>
   </body>
 </html>
 

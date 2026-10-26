@@ -18,6 +18,13 @@ export const friendsPageConfig: FriendsPageConfig = {
 
 	// 是否开启随机排序配置，如果开启，就会忽略权重，构建时进行一次随机排序
 	randomizeSort: false,
+
+	// 友链页背景 Canvas 粒子特效
+	particles: {
+		enabled: true,
+		density: 1,
+		interactive: true,
+	},
 };
 
 // 友链配置

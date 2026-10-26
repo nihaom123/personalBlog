@@ -43,6 +43,11 @@ html::before {
 	background-position: center;
 	background-size: cover;
 	background-repeat: no-repeat;
+	/* 提升为独立合成层：只靠 position: fixed + z-index: -1 时，Chromium 会把这块
+	   覆盖整屏的背景并进滚动内容一起分块光栅化，滚动后在块边缘留下 1px 亮缝。
+	   固定到视口后只需光栅化一次，不再随滚动出现接缝。 */
+	transform: translateZ(0);
+	will-change: transform;
 }
 
 body {
@@ -125,6 +130,7 @@ body.is-home #main-grid > #right-sidebar-static,
 body.is-home #main-grid > #right-sidebar-dynamic,
 body.is-home #mobile-bottom-sidebar,
 body.is-home #category-bar-wrapper,
+body.is-home #bottom-widgets,
 body.is-home #content-panel-inner > .site-footer,
 body.is-home .floating-controls-container {
 	display: none !important;

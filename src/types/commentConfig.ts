@@ -1,29 +1,18 @@
 export type CommentConfig = {
 	/**
 	 * 当前启用的评论系统类型
-	 * "none" | "twikoo" | "waline" | "giscus" | "disqus" | 'artalk'
+	 * "none" | "waline" | "giscus" | "disqus" | 'artalk'
 	 */
-	type: "none" | "twikoo" | "waline" | "giscus" | "disqus" | "artalk";
-	twikoo?: {
-		envId: string;
-		region?: string;
-		lang?: string;
-		visitorCount?: boolean;
-		/**
-		 * Twikoo JS 文件地址，支持 CDN 链接
-		 * 国内推荐: https://registry.npmmirror.com/twikoo/1.7.9/files/dist/twikoo.min.js
-		 * 国际推荐: https://cdn.jsdelivr.net/npm/twikoo@1.7.9/dist/twikoo.min.js
-		 */
-		jsUrl?: string;
-		/**
-		 * Twikoo 自定义 CSS 文件地址，为空则不加载
-		 */
-		cssUrl?: string;
-	};
+	type: "none" | "waline" | "giscus" | "disqus" | "artalk";
 	waline?: {
 		serverURL: string;
 		lang?: string;
 		emoji: string[];
+		/**
+		 * 留言板图片上传接口地址（可选）
+		 * 未配置时图片会以 base64 内联，单张不能超过 128 KB
+		 */
+		imageUploadURL?: string;
 		login?: "enable" | "force" | "disable";
 		visitorCount?: boolean; // 是否统计访问量，true 启用访问量，false 关闭
 	};

@@ -1,0 +1,722 @@
+/* ============================================================
+   Treasure shell - shared visual layer for every non-home page
+   Inspired by the glassmorphism layout of XinghuisamaBlogs
+   (CC BY-NC 4.0). Scoped under .treasure-page so the custom
+   homepage keeps its original look.
+   ============================================================ */
+
+.treasure-page {
+	/* 让内页沿用参考站的 indigo/violet 主色；首页不在此作用域内，保持原样 */
+	--hue: 275;
+	/* :root 上的派生色已经用原始色相算好了，改 --hue 不会回算，
+	   所以这里把常用派生变量按 indigo 重新声明一遍 */
+	--primary: oklch(0.62 0.19 275);
+	--btn-content: oklch(0.52 0.16 275);
+	--btn-regular-bg: oklch(0.95 0.025 275);
+	--btn-regular-bg-hover: oklch(0.9 0.05 275);
+	--btn-regular-bg-active: oklch(0.85 0.08 275);
+	--btn-plain-bg-hover: oklch(0.95 0.025 275);
+	--btn-plain-bg-active: oklch(0.98 0.01 275);
+	--btn-card-bg-hover: oklch(0.98 0.006 275);
+	--btn-card-bg-active: oklch(0.9 0.03 275);
+	--deep-text: oklch(0.27 0.025 275);
+	--title-active: oklch(0.58 0.16 275);
+	--selection-bg: oklch(0.9 0.05 275);
+	--link-underline: oklch(0.93 0.04 275);
+	--link-hover: oklch(0.95 0.025 275);
+	--link-active: oklch(0.9 0.05 275);
+	--toc-badge-bg: oklch(0.9 0.045 275);
+	--toc-btn-hover: oklch(0.92 0.05 275);
+	--toc-btn-active: oklch(0.9 0.06 275);
+	--toc-indicator-bg: oklch(0.92 0.015 275);
+	--toc-item-active: oklch(0.66 0.15 275);
+	--tl-accent: #6366f1;
+	--tl-accent-2: #a855f7;
+	--tl-accent-3: #ec4899;
+	--tl-ink: #1e293b;
+	--tl-muted: #64748b;
+	--tl-glass: rgb(255 255 255 / 0.62);
+	--tl-glass-strong: rgb(255 255 255 / 0.78);
+	--tl-line: rgb(255 255 255 / 0.6);
+	--tl-shadow: 0 18px 60px rgb(79 70 229 / 0.12);
+	--tl-radius: 1.5rem;
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	color: var(--tl-ink);
+	background: #f1f5f9;
+}
+
+html.dark .treasure-page {
+	--primary: oklch(0.75 0.16 275);
+	--btn-content: oklch(0.78 0.12 275);
+	--btn-regular-bg: oklch(0.33 0.04 275);
+	--btn-regular-bg-hover: oklch(0.38 0.045 275);
+	--btn-regular-bg-active: oklch(0.43 0.05 275);
+	--btn-plain-bg-hover: oklch(0.3 0.04 275);
+	--btn-plain-bg-active: oklch(0.27 0.03 275);
+	--btn-card-bg-hover: oklch(0.3 0.035 275);
+	--btn-card-bg-active: oklch(0.35 0.04 275);
+	--deep-text: oklch(0.93 0.01 275);
+	--title-active: oklch(0.75 0.15 275);
+	--selection-bg: oklch(0.35 0.06 275);
+	--link-underline: oklch(0.35 0.05 275);
+	--link-hover: oklch(0.3 0.04 275);
+	--link-active: oklch(0.38 0.05 275);
+	--toc-badge-bg: oklch(0.35 0.05 275);
+	--toc-btn-hover: oklch(0.32 0.05 275);
+	--toc-btn-active: oklch(0.38 0.06 275);
+	--toc-indicator-bg: oklch(0.3 0.02 275);
+	--toc-item-active: oklch(0.75 0.14 275);
+	--tl-ink: #e2e8f0;
+	--tl-muted: #94a3b8;
+	--tl-glass: rgb(15 23 42 / 0.56);
+	--tl-glass-strong: rgb(15 23 42 / 0.76);
+	--tl-line: rgb(255 255 255 / 0.1);
+	--tl-shadow: 0 18px 60px rgb(0 0 0 / 0.38);
+	background: #020617;
+}
+
+/* ---------- fixed background ---------- */
+
+.tl-bg {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.tl-bg picture,
+.tl-bg-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.tl-bg-img {
+	object-fit: cover;
+	transform: scale(1.04);
+	filter: blur(1.5px) saturate(1.08);
+}
+
+.tl-bg-overlay {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(circle at 12% 8%, rgb(99 102 241 / 0.16), transparent 42%),
+		radial-gradient(circle at 88% 18%, rgb(236 72 153 / 0.13), transparent 40%),
+		linear-gradient(
+			180deg,
+			rgb(248 250 252 / 0.7) 0%,
+			rgb(248 250 252 / 0.46) 38%,
+			rgb(248 250 252 / 0.86) 100%
+		);
+	backdrop-filter: blur(3px);
+}
+
+html.dark .tl-bg-overlay {
+	background:
+		radial-gradient(circle at 12% 8%, rgb(99 102 241 / 0.28), transparent 42%),
+		radial-gradient(circle at 88% 18%, rgb(168 85 247 / 0.2), transparent 40%),
+		linear-gradient(
+			180deg,
+			rgb(2 6 23 / 0.74) 0%,
+			rgb(2 6 23 / 0.58) 38%,
+			rgb(2 6 23 / 0.92) 100%
+		);
+}
+
+.tl-blob {
+	position: absolute;
+	border-radius: 9999px;
+	filter: blur(90px);
+	opacity: 0.5;
+	animation: tl-drift 18s ease-in-out infinite alternate;
+}
+
+.tl-blob-1 {
+	top: -10%;
+	left: -6%;
+	width: 26rem;
+	height: 26rem;
+	background: rgb(99 102 241 / 0.5);
+}
+
+.tl-blob-2 {
+	top: 22%;
+	right: -8%;
+	width: 22rem;
+	height: 22rem;
+	background: rgb(168 85 247 / 0.42);
+	animation-delay: -6s;
+}
+
+.tl-blob-3 {
+	bottom: -14%;
+	left: 32%;
+	width: 24rem;
+	height: 24rem;
+	background: rgb(236 72 153 / 0.28);
+	animation-delay: -11s;
+}
+
+html.dark .tl-blob {
+	opacity: 0.34;
+}
+
+@keyframes tl-drift {
+	from {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	to {
+		transform: translate3d(2.5rem, 1.5rem, 0) scale(1.08);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tl-blob {
+		animation: none;
+	}
+}
+
+/* ---------- floating navigation ---------- */
+
+.tl-nav-wrap {
+	position: fixed;
+	top: 1rem;
+	left: 0;
+	right: 0;
+	z-index: 60;
+	display: flex;
+	justify-content: center;
+	padding: 0 1rem;
+}
+
+.tl-nav {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	width: min(1120px, 100%);
+	padding: 0.45rem 0.6rem;
+	border: 1px solid var(--tl-line);
+	border-radius: 9999px;
+	background: rgb(255 255 255 / 0.72);
+	box-shadow: 0 12px 40px rgb(15 23 42 / 0.1);
+	backdrop-filter: blur(24px) saturate(180%);
+}
+
+html.dark .tl-nav {
+	background: rgb(15 23 42 / 0.64);
+	box-shadow: 0 12px 40px rgb(0 0 0 / 0.4);
+}
+
+.tl-brand {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	min-width: 0;
+	padding: 0.2rem 0.55rem;
+	border-radius: 9999px;
+	color: inherit;
+	text-decoration: none;
+}
+
+.tl-brand-mark {
+	display: grid;
+	place-items: center;
+	width: 2.35rem;
+	height: 2.35rem;
+	border-radius: 9999px;
+	background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-2));
+	box-shadow: 0 6px 18px rgb(99 102 241 / 0.4);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.tl-brand-text {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.15;
+}
+
+.tl-brand-text strong {
+	font-size: 0.92rem;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.tl-brand-text small {
+	margin-top: 0.1rem;
+	color: var(--tl-muted);
+	font-size: 0.68rem;
+	white-space: nowrap;
+}
+
+.tl-nav-links {
+	display: flex;
+	align-items: center;
+	gap: 0.1rem;
+	margin: 0 0 0 0.35rem;
+	padding: 0;
+	list-style: none;
+}
+
+.tl-nav-link {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.5rem 0.78rem;
+	border-radius: 9999px;
+	color: #475569;
+	font-size: 0.84rem;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color 0.22s ease,
+		color 0.22s ease,
+		transform 0.22s ease,
+		box-shadow 0.22s ease;
+}
+
+html.dark .tl-nav-link {
+	color: #cbd5e1;
+}
+
+.tl-nav-link:hover {
+	background: rgb(99 102 241 / 0.12);
+	color: #4f46e5;
+	transform: translateY(-1px);
+}
+
+.tl-nav-link.is-active {
+	background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-2));
+	box-shadow: 0 6px 16px rgb(99 102 241 / 0.35);
+	color: #fff;
+}
+
+html.dark .tl-nav-link.is-active {
+	color: #fff;
+}
+
+.tl-nav-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.15rem;
+	margin-left: auto;
+}
+
+.tl-icon-btn {
+	display: grid;
+	place-items: center;
+	width: 2.4rem;
+	height: 2.4rem;
+	border: 0;
+	border-radius: 9999px;
+	background: transparent;
+	color: #475569;
+	font-size: 1.2rem;
+	cursor: pointer;
+	text-decoration: none;
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease,
+		transform 0.2s ease;
+}
+
+html.dark .tl-icon-btn {
+	color: #cbd5e1;
+}
+
+.tl-icon-btn:hover {
+	background: rgb(99 102 241 / 0.12);
+	color: #4f46e5;
+	transform: translateY(-1px);
+}
+
+.tl-theme {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.tl-theme button {
+	height: 2.4rem !important;
+	width: 2.4rem !important;
+	border-radius: 9999px !important;
+}
+
+/* 主题面板：导航里的 .tl-theme 只有按钮大小，面板以它为包含块时必须显式给宽度，
+   否则会被压缩到文字宽度并把菜单文案裁掉。 */
+.treasure-page #theme-mode-panel {
+	top: 3.1rem !important;
+	right: 0 !important;
+	width: 9.5rem !important;
+}
+
+.tl-mobile {
+	display: none;
+	position: relative;
+}
+
+.tl-mobile summary {
+	list-style: none;
+}
+
+.tl-mobile summary::-webkit-details-marker {
+	display: none;
+}
+
+.tl-mobile-panel {
+	position: absolute;
+	top: calc(100% + 0.7rem);
+	right: -0.2rem;
+	display: grid;
+	gap: 0.2rem;
+	width: 13rem;
+	max-height: min(70vh, 32rem);
+	overflow-y: auto;
+	padding: 0.55rem;
+	border: 1px solid var(--tl-line);
+	border-radius: 1.2rem;
+	background: rgb(255 255 255 / 0.97);
+	box-shadow: var(--tl-shadow);
+	backdrop-filter: blur(24px) saturate(180%);
+}
+
+html.dark .tl-mobile-panel {
+	background: rgb(15 23 42 / 0.97);
+}
+
+.tl-mobile-link {
+	padding: 0.62rem 0.8rem;
+	border-radius: 0.8rem;
+	color: var(--tl-ink);
+	font-size: 0.88rem;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.tl-mobile-link:hover {
+	background: rgb(99 102 241 / 0.12);
+	color: #4f46e5;
+}
+
+.tl-mobile-link.is-active {
+	background: rgb(99 102 241 / 0.14);
+	color: #4f46e5;
+}
+
+@media (max-width: 1080px) {
+	.tl-nav-links {
+		display: none;
+	}
+
+	.tl-mobile {
+		display: block;
+	}
+}
+
+/* ---------- main layout ---------- */
+
+.tl-main {
+	position: relative;
+	z-index: 1;
+	width: min(1120px, 100%);
+	margin: 0 auto;
+	padding: 7.5rem 1.15rem 3.5rem;
+	flex: 1;
+}
+
+.tl-page-head {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0 auto 2.4rem;
+	text-align: center;
+}
+
+.tl-eyebrow {
+	color: var(--tl-accent);
+	font-size: 0.7rem;
+	font-weight: 800;
+	letter-spacing: 0.32em;
+	text-transform: uppercase;
+}
+
+html.dark .tl-eyebrow {
+	color: #a5b4fc;
+}
+
+.tl-title {
+	margin: 0.65rem 0 0;
+	background: linear-gradient(120deg, #1e293b 8%, #4f46e5 48%, #a855f7 92%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	font-size: clamp(2rem, 4.6vw, 3.15rem);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.15;
+}
+
+html.dark .tl-title {
+	background: linear-gradient(120deg, #f8fafc 8%, #a5b4fc 52%, #d8b4fe 96%);
+	-webkit-background-clip: text;
+	background-clip: text;
+}
+
+.tl-subtitle {
+	margin: 0.8rem 0 0;
+	max-width: 40rem;
+	color: var(--tl-muted);
+	font-size: 0.95rem;
+	line-height: 1.75;
+}
+
+.tl-head-line {
+	display: block;
+	width: 5.5rem;
+	height: 0.25rem;
+	margin-top: 1.35rem;
+	border-radius: 9999px;
+	background: linear-gradient(90deg, var(--tl-accent), var(--tl-accent-2));
+	box-shadow: 0 5px 16px rgb(99 102 241 / 0.35);
+}
+
+.tl-content {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	width: 100%;
+}
+
+.tl-content > * {
+	min-width: 0;
+}
+
+/* The shell already renders the page title, hide the old inner heading. */
+.treasure-page .page-heading {
+	display: none !important;
+}
+
+.treasure-page .page-hero-title {
+	display: none !important;
+}
+
+/* ---------- glass surfaces ---------- */
+
+.treasure-page .card-base {
+	border: 1px solid var(--tl-line) !important;
+	border-radius: var(--tl-radius) !important;
+	background: var(--tl-glass) !important;
+	box-shadow: var(--tl-shadow) !important;
+	backdrop-filter: blur(22px) saturate(160%);
+}
+
+.treasure-page .post-card-wrapper {
+	border: 1px solid var(--tl-line) !important;
+	border-radius: var(--tl-radius) !important;
+	background: var(--tl-glass) !important;
+	box-shadow: var(--tl-shadow) !important;
+	backdrop-filter: blur(22px) saturate(160%);
+	transition:
+		transform 0.32s ease,
+		box-shadow 0.32s ease,
+		border-color 0.32s ease;
+}
+
+.treasure-page .post-card-wrapper:hover {
+	transform: translateY(-5px);
+	border-color: rgb(129 140 248 / 0.65) !important;
+	box-shadow: 0 26px 60px rgb(99 102 241 / 0.24) !important;
+}
+
+/* 网格模式里无封面的文章不再保留右侧那条白色竖条按钮，
+   让玻璃卡片整体保持干净、和参考站的卡片流一致 */
+.treasure-page .grid-mode .post-card-enter-btn {
+	display: none !important;
+}
+
+.treasure-page .grid-mode .no-cover .post-card-content {
+	width: 100% !important;
+	padding-right: 1.5rem !important;
+}
+
+.treasure-page .project-card,
+.treasure-page .friend-card {
+	border: 1px solid var(--tl-line) !important;
+	border-radius: 1.15rem !important;
+	background: rgb(255 255 255 / 0.34) !important;
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.3s ease,
+		border-color 0.3s ease,
+		background-color 0.3s ease;
+}
+
+html.dark .treasure-page .project-card,
+html.dark .treasure-page .friend-card {
+	background: rgb(15 23 42 / 0.28) !important;
+}
+
+.treasure-page .project-card:hover,
+.treasure-page .friend-card:hover {
+	transform: translateY(-4px);
+	border-color: rgb(129 140 248 / 0.7) !important;
+	background: rgb(255 255 255 / 0.55) !important;
+	box-shadow: 0 18px 44px rgb(99 102 241 / 0.2);
+}
+
+html.dark .treasure-page .project-card:hover,
+html.dark .treasure-page .friend-card:hover {
+	background: rgb(30 41 59 / 0.62) !important;
+}
+
+/* ---------- forms & controls inside content ---------- */
+
+.treasure-page input,
+.treasure-page textarea,
+.treasure-page select {
+	border-color: var(--tl-line) !important;
+	border-radius: 0.85rem;
+	background: rgb(255 255 255 / 0.4);
+}
+
+html.dark .treasure-page input,
+html.dark .treasure-page textarea,
+html.dark .treasure-page select {
+	background: rgb(15 23 42 / 0.4);
+}
+
+.treasure-page .category-pill {
+	border: 1px solid var(--tl-line);
+	border-radius: 9999px;
+	background: rgb(255 255 255 / 0.32);
+}
+
+html.dark .treasure-page .category-pill {
+	background: rgb(15 23 42 / 0.32);
+}
+
+/* ---------- pages with an immersive fixed-height layout ---------- */
+
+.treasure-page .guestbook-page {
+	height: auto !important;
+	min-height: 62vh;
+}
+
+.treasure-page .post-page,
+.treasure-page .post-container {
+	border-radius: var(--tl-radius);
+}
+
+/* Leave room for the floating controls on post pages. */
+.treasure-page #floating-toc-wrapper {
+	z-index: 70;
+}
+
+/* ---------- footer & back-to-top ---------- */
+
+.tl-footer {
+	position: relative;
+	z-index: 1;
+	padding: 1.6rem 1.15rem 2.2rem;
+	color: var(--tl-muted);
+	text-align: center;
+	font-size: 0.78rem;
+	line-height: 1.8;
+}
+
+.tl-footer p {
+	margin: 0;
+}
+
+.tl-footer-sub {
+	opacity: 0.78;
+}
+
+.tl-footer a {
+	color: var(--tl-accent);
+	text-decoration: none;
+}
+
+html.dark .tl-footer a {
+	color: #a5b4fc;
+}
+
+.tl-footer a:hover {
+	text-decoration: underline;
+}
+
+.tl-backtop {
+	position: fixed;
+	right: 1.15rem;
+	bottom: 1.3rem;
+	z-index: 70;
+	display: grid;
+	place-items: center;
+	width: 2.7rem;
+	height: 2.7rem;
+	border: 1px solid var(--tl-line);
+	border-radius: 9999px;
+	background: var(--tl-glass-strong);
+	box-shadow: var(--tl-shadow);
+	backdrop-filter: blur(18px);
+	color: var(--tl-accent);
+	font-size: 1.25rem;
+	text-decoration: none;
+	transition:
+		transform 0.22s ease,
+		box-shadow 0.22s ease;
+}
+
+.tl-backtop:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 16px 36px rgb(99 102 241 / 0.3);
+}
+
+@media (max-width: 767px) {
+	.tl-nav-wrap {
+		top: 0.7rem;
+		padding: 0 0.65rem;
+	}
+
+	.tl-nav {
+		padding: 0.4rem 0.45rem;
+	}
+
+	.tl-brand-text small {
+		display: none;
+	}
+
+	.tl-main {
+		padding: 6.4rem 0.75rem 2.6rem;
+	}
+
+	.tl-page-head {
+		margin-bottom: 1.7rem;
+	}
+
+	.tl-title {
+		font-size: clamp(1.75rem, 8vw, 2.35rem);
+	}
+
+	.tl-subtitle {
+		font-size: 0.88rem;
+	}
+
+	.tl-backtop {
+		display: none;
+	}
+
+	.treasure-page .card-base,
+	.treasure-page .post-card-wrapper {
+		border-radius: 1.15rem !important;
+	}
+}

@@ -1,0 +1,501 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import "@/styles/pages/common.css";
+
+const title = "后台管理入口";
+const description = "集中管理评论、图床和部署服务";
+
+const walineServer = "https://waline.05221024.xyz";
+const siteGuestbook = "https://05221024.xyz/guestbook/";
+const walineLogin = `${walineServer}/ui/login?lng=zh-cn&redirect=${encodeURIComponent(siteGuestbook)}`;
+const walineManage = `${walineServer}/ui`;
+const imgbedAdmin = "https://img.05221024.xyz/dashboard";
+const imgbedHome = "https://img.05221024.xyz/";
+const cloudflare = "https://dash.cloudflare.com/";
+const githubRepo = "https://github.com/nihaom123/personalBlog";
+---
+
+<MainGridLayout title={title} description={description}>
+	<div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+		<div class="card-base z-10 px-6 py-6 md:px-9 md:py-7 relative w-full">
+			<div class="page-heading mb-5">
+				<div class="page-icon" aria-hidden="true">
+					<Icon name="material-symbols:shield-outline" />
+				</div>
+				<div>
+					<h2>{title}</h2>
+					<p>评论、图床和部署服务的统一入口</p>
+				</div>
+			</div>
+
+			<div id="admin-lock" class="admin-lock">
+				<div class="admin-lock__mark" aria-hidden="true">
+					<Icon name="material-symbols:lock-outline" />
+				</div>
+				<h3>需要口令</h3>
+				<p>
+					这里集中列出了所有后台地址。口令只做前台遮挡，不替代各平台自己的账号密码。
+				</p>
+				<form id="admin-unlock-form" class="admin-lock__form" autocomplete="off">
+					<label class="sr-only" for="admin-passphrase">访问口令</label>
+					<input
+						id="admin-passphrase"
+						name="passphrase"
+						type="password"
+						placeholder="输入访问口令"
+						required
+					/>
+					<button type="submit">进入</button>
+				</form>
+				<p id="admin-lock-error" class="admin-lock__error" role="alert" hidden>
+					口令不正确，请重试。
+				</p>
+			</div>
+
+			<div id="admin-content" hidden>
+				<div class="admin-toolbar">
+					<span>
+						<Icon name="material-symbols:info-outline" />
+						按用途分组，先确认是哪个系统，再登录对应后台
+					</span>
+					<button id="admin-lock-again" type="button">锁定并退出</button>
+				</div>
+
+				<section class="admin-group">
+					<header class="admin-group__head">
+						<span class="admin-group__dot is-comment"></span>
+						<h3>评论系统</h3>
+						<span class="admin-badge is-active">当前主用</span>
+					</header>
+					<div class="admin-grid">
+						<article class="admin-card">
+							<div class="admin-card__top">
+								<div class="admin-card__icon is-comment">
+									<Icon name="material-symbols:chat-bubble-outline" />
+								</div>
+								<div>
+									<h4>Waline 评论</h4>
+									<p>文章评论 + 留言墙</p>
+								</div>
+							</div>
+							<p class="admin-card__note">
+								留言墙和文章评论区共用这一个服务。管理员账号在部署 Waline
+								时设置，和博客前台账号不是同一套。
+							</p>
+							<div class="admin-card__actions">
+								<a class="is-primary" href={walineLogin}>登录并返回留言墙</a>
+								<a href={walineManage}>评论管理面板</a>
+							</div>
+						</article>
+					</div>
+				</section>
+
+				<section class="admin-group">
+					<header class="admin-group__head">
+						<span class="admin-group__dot is-image"></span>
+						<h3>图片与存储</h3>
+						<span class="admin-badge is-active">当前主用</span>
+					</header>
+					<div class="admin-grid">
+						<article class="admin-card">
+							<div class="admin-card__top">
+								<div class="admin-card__icon is-image">
+									<Icon name="material-symbols:image-outline" />
+								</div>
+								<div>
+									<h4>ImgBed 图床</h4>
+									<p>图片上传 + 管理</p>
+								</div>
+							</div>
+							<p class="admin-card__note">
+								图片实际存储在 Cloudflare R2，文件信息记录在 D1。留言板和文章里的图片都从这里走。
+							</p>
+							<div class="admin-card__actions">
+								<a class="is-primary" href={imgbedAdmin}>图床管理后台</a>
+								<a href={imgbedHome}>打开图片库</a>
+							</div>
+						</article>
+					</div>
+				</section>
+
+				<section class="admin-group">
+					<header class="admin-group__head">
+						<span class="admin-group__dot is-deploy"></span>
+						<h3>部署与源码</h3>
+						<span class="admin-badge">基础设施</span>
+					</header>
+					<div class="admin-grid">
+						<article class="admin-card">
+							<div class="admin-card__top">
+								<div class="admin-card__icon is-deploy">
+									<Icon name="material-symbols:cloud-outline" />
+								</div>
+								<div>
+									<h4>Cloudflare</h4>
+									<p>Pages、Workers、R2、D1</p>
+								</div>
+							</div>
+							<p class="admin-card__note">
+								博客站点、评论 Worker、图床 Worker 和存储资源都在同一个 Cloudflare
+								账号下。
+							</p>
+							<div class="admin-card__actions">
+								<a href={cloudflare}>Cloudflare 控制台</a>
+							</div>
+						</article>
+
+						<article class="admin-card">
+							<div class="admin-card__top">
+								<div class="admin-card__icon is-deploy">
+									<Icon name="material-symbols:code" />
+								</div>
+								<div>
+									<h4>GitHub</h4>
+									<p>博客源码与自动构建</p>
+								</div>
+							</div>
+							<p class="admin-card__note">
+								推送主分支后会触发 Cloudflare 自动重建。图床和评论 Worker
+								的源码在仓库的 infra 目录。
+							</p>
+							<div class="admin-card__actions">
+								<a href={githubRepo}>GitHub 仓库</a>
+							</div>
+						</article>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+</MainGridLayout>
+
+<script is:inline>
+	(function initAdminGate() {
+		const PASS_HASH =
+			"62ba3d5821a7b6a386561fd4bc627ae4fd6dcbbe774e81d2de00370bec19ce0c";
+		const STORAGE_KEY = "firefly-admin-unlock";
+		const TTL = 60 * 60 * 1000;
+
+		const lockPanel = document.getElementById("admin-lock");
+		const content = document.getElementById("admin-content");
+		const form = document.getElementById("admin-unlock-form");
+		const input = document.getElementById("admin-passphrase");
+		const error = document.getElementById("admin-lock-error");
+		const lockAgain = document.getElementById("admin-lock-again");
+		if (!lockPanel || !content || !form || !input) return;
+
+		function unlock() {
+			lockPanel.hidden = true;
+			content.hidden = false;
+		}
+
+		function isUnlocked() {
+			try {
+				const expiry = Number(sessionStorage.getItem(STORAGE_KEY));
+				return Number.isFinite(expiry) && Date.now() < expiry;
+			} catch (_) {
+				return false;
+			}
+		}
+
+		async function digest(value) {
+			const data = new TextEncoder().encode(value);
+			const hash = await crypto.subtle.digest("SHA-256", data);
+			return Array.from(new Uint8Array(hash))
+				.map((byte) => byte.toString(16).padStart(2, "0"))
+				.join("");
+		}
+
+		if (isUnlocked()) unlock();
+
+		form.addEventListener("submit", async (event) => {
+			event.preventDefault();
+			error.hidden = true;
+			try {
+				const hash = await digest(input.value.trim());
+				if (hash !== PASS_HASH) {
+					error.hidden = false;
+					input.select();
+					return;
+				}
+				sessionStorage.setItem(STORAGE_KEY, String(Date.now() + TTL));
+				unlock();
+			} catch (_) {
+				error.textContent = "当前环境无法校验口令，请通过 HTTPS 访问";
+				error.hidden = false;
+			}
+		});
+
+		lockAgain?.addEventListener("click", () => {
+			try {
+				sessionStorage.removeItem(STORAGE_KEY);
+			} catch (_) {
+				/* ignore */
+			}
+			window.location.reload();
+		});
+	})();
+</script>
+
+<style>
+	.admin-lock {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: 2.5rem 1rem;
+	}
+
+	.admin-lock__mark {
+		display: grid;
+		place-items: center;
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: 999px;
+		background: var(--btn-regular-bg);
+		color: var(--primary);
+		font-size: 1.6rem;
+		margin-bottom: 0.8rem;
+	}
+
+	.admin-lock h3 {
+		margin: 0 0 0.35rem;
+		font-size: 1.05rem;
+		font-weight: 700;
+	}
+
+	.admin-lock p {
+		max-width: 26rem;
+		margin: 0;
+		font-size: 0.82rem;
+		line-height: 1.7;
+		opacity: 0.65;
+	}
+
+	.admin-lock__form {
+		display: flex;
+		gap: 0.5rem;
+		width: min(22rem, 100%);
+		margin-top: 1.2rem;
+	}
+
+	.admin-lock__form input {
+		flex: 1;
+		min-width: 0;
+		height: 2.5rem;
+		padding: 0 0.8rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.7rem;
+		background: var(--card-bg);
+		color: var(--deep-text);
+		outline: none;
+	}
+
+	.admin-lock__form input:focus {
+		border-color: var(--primary);
+	}
+
+	.admin-lock__form button {
+		height: 2.5rem;
+		padding: 0 1.1rem;
+		border: none;
+		border-radius: 0.7rem;
+		background: var(--primary);
+		color: #fff;
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	.admin-lock__error {
+		margin-top: 0.7rem;
+		color: #dc2626;
+		font-size: 0.75rem;
+	}
+
+	.admin-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		margin-bottom: 1.1rem;
+		padding: 0.6rem 0.8rem;
+		border: 1px dashed var(--line-divider);
+		border-radius: 0.7rem;
+		font-size: 0.74rem;
+		opacity: 0.8;
+	}
+
+	.admin-toolbar span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.admin-toolbar button {
+		padding: 0.25rem 0.6rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.5rem;
+		background: transparent;
+		color: inherit;
+		font-size: 0.7rem;
+		cursor: pointer;
+	}
+
+	.admin-group + .admin-group {
+		margin-top: 1.5rem;
+	}
+
+	.admin-group__head {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.65rem;
+	}
+
+	.admin-group__head h3 {
+		margin: 0;
+		font-size: 0.95rem;
+		font-weight: 700;
+	}
+
+	.admin-group__dot {
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 999px;
+		background: var(--primary);
+	}
+
+	.admin-group__dot.is-comment {
+		background: #6366f1;
+	}
+
+	.admin-group__dot.is-image {
+		background: #10b981;
+	}
+
+	.admin-group__dot.is-deploy {
+		background: #f59e0b;
+	}
+
+	.admin-badge {
+		margin-left: auto;
+		padding: 0.1rem 0.45rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 999px;
+		font-size: 0.62rem;
+		opacity: 0.7;
+	}
+
+	.admin-badge.is-active {
+		border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+		color: var(--primary);
+		opacity: 1;
+	}
+
+	.admin-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 0.75rem;
+	}
+
+	.admin-card {
+		display: flex;
+		flex-direction: column;
+		padding: 0.9rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.9rem;
+		background: var(--btn-regular-bg);
+	}
+
+	.admin-card.is-muted {
+		opacity: 0.82;
+	}
+
+	.admin-card__top {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+	}
+
+	.admin-card__top h4 {
+		margin: 0;
+		font-size: 0.88rem;
+		font-weight: 700;
+	}
+
+	.admin-card__top p {
+		margin: 0.1rem 0 0;
+		font-size: 0.68rem;
+		opacity: 0.6;
+	}
+
+	.admin-card__icon {
+		display: grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 0.6rem;
+		background: var(--card-bg);
+		font-size: 1.05rem;
+	}
+
+	.admin-card__icon.is-comment {
+		color: #6366f1;
+	}
+
+	.admin-card__icon.is-image {
+		color: #10b981;
+	}
+
+	.admin-card__icon.is-deploy {
+		color: #f59e0b;
+	}
+
+	.admin-card__note {
+		margin: 0.6rem 0 0.8rem;
+		font-size: 0.73rem;
+		line-height: 1.65;
+		opacity: 0.65;
+	}
+
+	.admin-card__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: auto;
+	}
+
+	.admin-card__actions a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.32rem 0.65rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.55rem;
+		color: inherit;
+		font-size: 0.7rem;
+		text-decoration: none;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease;
+	}
+
+	.admin-card__actions a:hover {
+		border-color: var(--primary);
+		background: var(--card-bg);
+	}
+
+	.admin-card__actions a.is-primary {
+		border-color: var(--primary);
+		background: var(--primary);
+		color: #fff;
+	}
+
+	@media (max-width: 640px) {
+		.admin-lock__form {
+			flex-direction: column;
+		}
+	}
+</style>

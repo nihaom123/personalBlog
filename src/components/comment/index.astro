@@ -7,7 +7,6 @@ import { removeFileExtension } from "@/utils/url-utils";
 import Artalk from "./Artalk.astro";
 import Disqus from "./Disqus.astro";
 import Giscus from "./Giscus.astro";
-import Twikoo from "./Twikoo.astro";
 import Waline from "./Waline.astro";
 
 interface Props {
@@ -58,7 +57,6 @@ let commentService: string = commentConfig?.type || "none";
       </div>
       <!-- 评论内容区域 -->
       <div class="relative z-10 pl-2 pr-2">
-        {commentService === "twikoo" && <Twikoo path={path} />}
         {commentService === "waline" && <Waline path={path} />}
         {commentService === "giscus" && <Giscus />}
         {commentService === "disqus" && <Disqus identifier={slug} url={url} title={customTitle || postTitle || slug} />}

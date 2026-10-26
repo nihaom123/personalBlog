@@ -6,11 +6,14 @@ import Footer from "@components/layout/Footer.astro";
 import HeaderTopRow from "@components/layout/HeaderTopRow.astro";
 import NavMenuPanel from "@components/layout/NavMenuPanel.astro";
 import SideBar from "@components/layout/SideBar.astro";
+import SiteInfo from "@components/widget/SiteInfo.astro";
+import SiteStats from "@components/widget/SiteStats.astro";
 import type { MarkdownHeading } from "astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import SidebarColumn from "@/components/layout/SidebarColumn.astro";
 import WallpaperSection from "@/components/layout/WallpaperSection.astro";
+import TreasureShell from "@/components/layout/TreasureShell.astro";
 import {
 	live2dWidgetConfig,
 	navbarMode,
@@ -49,7 +52,7 @@ interface Props {
 	heading?: string;
 }
 
-const backgroundImages = getBackgroundImages();
+const backgroundImages = getBackgroundImages(Astro.url.pathname);
 
 const {
 	title,
@@ -70,6 +73,14 @@ const {
 
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 const isPostPage = !!postSlug;
+// 非首页统一使用参考站的玻璃拟态外壳；首页保持原有界面。
+// 后台与订阅端点保留原布局，避免影响功能与 XML 输出。
+const treasureExcludedPrefixes = ["/admin", "/rss", "/atom"];
+const isTreasurePage =
+	!isHomePageCheck &&
+	!treasureExcludedPrefixes.some((prefix) =>
+		Astro.url.pathname.startsWith(prefix),
+	);
 const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 
@@ -78,6 +89,7 @@ const banner = getBannerVisibilityState({
 	isPostPage,
 	title,
 	bannerPostMeta,
+	pathname: Astro.url.pathname,
 });
 const sidebar = getEffectiveSidebarState({ isPostPage });
 
@@ -91,11 +103,33 @@ const {
 	gridColumnStyle,
 	gridDataAttrs,
 } = sidebar;
+
+// 页面底部居中组件（站点统计 / 站点信息）
+const bottomWidgets = sidebarLayoutConfig.bottomComponents ?? [];
+const statsWidget = bottomWidgets.find(
+	(comp) => comp.enable && comp.type === "stats",
+);
+const siteInfoWidget = bottomWidgets.find(
+	(comp) => comp.enable && comp.type === "siteInfo",
+);
 ---
 
 <Layout title={title} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug} postCoverImage={postCoverImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogImageAlt={ogImageAlt} hasWallpaper={hasWallpaper}>
 
 <slot slot="head" name="head" />
+
+{isTreasurePage ? (
+    <TreasureShell
+        title={title}
+        heading={heading}
+        isPostPage={isPostPage}
+        backgroundImages={backgroundImages}
+        pathname={Astro.url.pathname}
+    >
+        <slot />
+    </TreasureShell>
+) : (
+    <>
 <HeaderTopRow navbarMode={navbarMode} navbarWidthFull={navbarWidthFull} />
 
 <WallpaperSection state={banner} backgroundImages={backgroundImages} title={title} bannerPostMeta={bannerPostMeta} />
@@ -170,16 +204,27 @@ const {
         <SpineModel></SpineModel>
         {live2dWidgetConfig.enable && <Live2DWidget config={live2dWidgetConfig} />}
 
+        {(statsWidget || siteInfoWidget) && (
+            <div id="bottom-widgets" class="mt-2 px-2 md:px-4">
+                <div class="mx-auto grid w-full max-w-3xl grid-cols-1 items-start gap-4 md:grid-cols-2">
+                    {statsWidget && <SiteStats widgetConfig={statsWidget} class="onload-animation" />}
+                    {siteInfoWidget && <SiteInfo widgetConfig={siteInfoWidget} class="onload-animation" />}
+                </div>
+            </div>
+        )}
+
         {/* 页脚宽度跨「侧栏 + 内容栏」，故在 #content-column 之外；又在 Swup 容器之外，
             切页不重渲染 */}
         <Footer />
     </div>
 </div>
+    </>
+)}
 
 <FloatingControls headings={headings} encrypted={encrypted} />
 
 <!-- 移动端导航抽屉：渲染为 <body> 直系子元素，脱离导航栏的 transform 包含块才能铺满视口 -->
-<NavMenuPanel links={resolveNavMenuLinks()} />
+{!isTreasurePage && <NavMenuPanel links={resolveNavMenuLinks()} />}
 
 <!--
     触屏设备上让代码块的复制按钮默认隐藏，点一下代码块才显形。

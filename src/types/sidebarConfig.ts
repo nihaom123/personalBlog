@@ -84,4 +84,5 @@ export type SidebarLayoutConfig = {
 	leftComponents: WidgetComponentConfig[]; // 左侧边栏组件配置列表
 	rightComponents: WidgetComponentConfig[]; // 右侧边栏组件配置列表
 	mobileBottomComponents: MobileBottomComponentConfig[]; // 移动端底部组件配置列表（<768px显示）
+	bottomComponents: MobileBottomComponentConfig[]; // 页面底部居中组件配置列表（内容区下方、页脚上方）
 };

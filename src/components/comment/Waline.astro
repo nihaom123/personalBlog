@@ -10,15 +10,18 @@ const config = {
 	el: "#waline",
 	path: Astro.props.path,
 	dark: "html.dark",
-	wordLimit: ["2", "300"],
+	wordLimit: ["2", "1000"],
 	...(commentConfig.waline?.visitorCount ? { pageview: true } : {}),
 };
+
+// is:inline 脚本不经过 Vite 处理，import.meta.env 在这里不可用，提前算好再注入
+const adminUrl = `${import.meta.env.BASE_URL}admin/`;
 ---
 <!-- Waline -->
 <div class="relative w-full">
   <div id="waline"></div>
   <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
-  <script type="module" is:inline define:vars={{ config }}>
+  <script type="module" is:inline define:vars={{ config, adminUrl }}>
     import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
     const requestedPath = new URLSearchParams(window.location.search).get("path");
     const effectiveConfig = requestedPath
@@ -29,6 +32,20 @@ const config = {
     } catch (error) {
       console.error("[Waline] Failed to initialize:", error);
     }
+
+    // 评论区的登录入口统一跳到博客后台管理页，避免出现两套后台入口
+    document.addEventListener(
+      "click",
+      (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const link = target.closest('a[href*="/ui/login"]');
+        if (!link || !link.closest("#waline")) return;
+        event.preventDefault();
+        location.href = adminUrl;
+      },
+      true,
+    );
   </script>
 </div>
 

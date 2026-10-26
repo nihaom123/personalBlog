@@ -1,0 +1,101 @@
+---
+import "@/styles/wallpaper-effects.css";
+---
+
+<!--
+  全屏壁纸效果控制器：
+  - 滚动视差：只在全屏模式、桌面端、未开启减弱动效时启用
+  - 首次揭幕：由 Layout <head> 里的内联脚本打上 pending 类，这里负责播放与收尾
+
+  使用 data-swup-ignore-script：脚本只执行一次，切页时通过每帧重新查询 DOM 适配新的壁纸节点。
+-->
+<script is:inline data-swup-ignore-script>
+	(function initWallpaperEffects() {
+		if (window.__fireflyWallpaperFx) return;
+		window.__fireflyWallpaperFx = true;
+
+		var root = document.documentElement;
+		var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		var rafId = 0;
+		var revealTimer = 0;
+
+		function finishReveal() {
+			root.classList.remove("wallpaper-reveal-pending");
+			var curtain = document.querySelector(".wallpaper-curtain");
+			if (curtain) curtain.remove();
+			try {
+				sessionStorage.setItem("wallpaper-reveal-done", "1");
+			} catch (_) {
+				/* sessionStorage 不可用时忽略 */
+			}
+		}
+
+		function playReveal() {
+			if (!root.classList.contains("wallpaper-reveal-pending")) return;
+			if (reduceMotion.matches) {
+				finishReveal();
+				return;
+			}
+			var curtain = document.querySelector(
+				"#wallpaper-wrapper .wallpaper-curtain",
+			);
+			if (!curtain) {
+				finishReveal();
+				return;
+			}
+			requestAnimationFrame(function () {
+				requestAnimationFrame(function () {
+					curtain.classList.add("is-revealing");
+				});
+			});
+			revealTimer = window.setTimeout(finishReveal, 1100);
+		}
+
+		function applyParallax() {
+			rafId = 0;
+			var container = document.getElementById("banner-images-container");
+			if (!container) return;
+
+			var enabled =
+				root.getAttribute("data-wallpaper-mode") === "fullscreen" &&
+				window.innerWidth >= 768 &&
+				!reduceMotion.matches;
+
+			if (!enabled) {
+				container.style.transform = "";
+				container.style.willChange = "";
+				return;
+			}
+
+			var vh = window.innerHeight;
+			var progress = Math.min(window.scrollY / vh, 1);
+			var offset = progress * vh * 0.03;
+			container.style.transform =
+				"translate3d(0, " + offset.toFixed(2) + "px, 0) scale(1.12)";
+			container.style.willChange = "transform";
+		}
+
+		function requestParallax() {
+			if (rafId) return;
+			rafId = requestAnimationFrame(applyParallax);
+		}
+
+		window.addEventListener("scroll", requestParallax, { passive: true });
+		window.addEventListener("resize", requestParallax, { passive: true });
+		window.addEventListener("wallpaperModeChange", requestParallax);
+		if (reduceMotion.addEventListener) {
+			reduceMotion.addEventListener("change", requestParallax);
+		}
+
+		playReveal();
+		applyParallax();
+
+		window.__fireflyWallpaperFxCleanup = function () {
+			window.clearTimeout(revealTimer);
+			if (rafId) cancelAnimationFrame(rafId);
+			window.removeEventListener("scroll", requestParallax);
+			window.removeEventListener("resize", requestParallax);
+			window.removeEventListener("wallpaperModeChange", requestParallax);
+		};
+	})();
+</script>

@@ -1,0 +1,259 @@
+---
+import { Icon } from "astro-icon/components";
+import MusicPlayer from "@/components/features/MusicPlayer.astro";
+import { musicPlayerConfig } from "@/config/musicConfig";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import "@/styles/pages/common.css";
+
+const title = "音乐角落";
+const description = "给耳朵一点自由的时间，随机播放一些喜欢的歌。";
+const playlist = musicPlayerConfig.local?.playlist ?? [];
+---
+
+<MainGridLayout title={title} description={description}>
+	<section class="page-shell music-page">
+		<div class="card-base music-page__player">
+			<div class="music-page__intro">
+				<span class="music-page__badge">
+					<Icon name="material-symbols:graphic-eq-rounded" />
+					NOW PLAYING
+				</span>
+				<h2>{title}</h2>
+				<p>{description}</p>
+			</div>
+			<MusicPlayer class="music-page__widget" />
+		</div>
+
+		{playlist.length > 0 && (
+			<div class="card-base music-page__list">
+				<div class="music-page__list-head">
+					<span class="music-page__list-title">
+						<Icon name="material-symbols:queue-music-rounded" />
+						{i18n(I18nKey.musicPlaylist)}
+					</span>
+					<span class="music-page__list-count">{playlist.length} 首</span>
+				</div>
+				<ul>
+					{playlist.map((song, index) => (
+						<li>
+							<button
+								type="button"
+								class="music-page__track"
+								data-track-index={index}
+								aria-label={`播放 ${song.name}`}
+							>
+								<span class="music-page__track-index">{String(index + 1).padStart(2, "0")}</span>
+								<span class="music-page__track-info">
+									<strong>{song.name}</strong>
+									<small>{song.artist}</small>
+								</span>
+								<Icon name="material-symbols:play-circle-rounded" />
+							</button>
+						</li>
+					))}
+				</ul>
+			</div>
+		)}
+
+		<p class="music-page__hint">
+			<Icon name="material-symbols:info-outline-rounded" />
+			右上角的悬浮胶囊可以随时展开完整播放器，切换页面也不会中断播放。
+		</p>
+	</section>
+</MainGridLayout>
+
+<script>
+	interface MusicManagerLike {
+		playTrackByIndex: (index: number) => void;
+	}
+
+	type PlayerWindow = Window & { __fireflyMusic?: MusicManagerLike };
+
+	function getMusicManager(): MusicManagerLike | null {
+		return (window as PlayerWindow).__fireflyMusic ?? null;
+	}
+
+	document.addEventListener("click", (event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLElement)) {
+			return;
+		}
+		const button = target.closest(".music-page__track");
+		if (!(button instanceof HTMLElement)) {
+			return;
+		}
+		const index = Number.parseInt(button.dataset.trackIndex ?? "", 10);
+		if (Number.isNaN(index)) {
+			return;
+		}
+		const manager = getMusicManager();
+		if (!manager) {
+			return;
+		}
+		manager.playTrackByIndex(index);
+	});
+</script>
+
+<style>
+	.music-page {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		max-width: 62rem;
+		margin-inline: auto;
+	}
+
+	.music-page__player {
+		display: flex;
+		flex-direction: column;
+		gap: 1.75rem;
+		padding: 2.25rem;
+	}
+
+	.music-page__intro h2 {
+		margin: 0.75rem 0 0.5rem;
+		font-size: clamp(1.75rem, 4vw, 2.5rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+
+	.music-page__intro p {
+		margin: 0;
+		color: var(--tl-muted, #64748b);
+		font-size: 0.95rem;
+	}
+
+	.music-page__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.35rem 0.8rem;
+		border-radius: 999px;
+		background: linear-gradient(120deg, #6366f1, #a855f7);
+		color: #fff;
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+	}
+
+	.music-page__widget {
+		padding: 1.5rem 1.25rem;
+		border-radius: 1.25rem;
+		background: rgb(255 255 255 / 0.5);
+		border: 1px solid rgb(129 140 248 / 0.28);
+	}
+
+	html.dark .music-page__widget {
+		background: rgb(255 255 255 / 0.06);
+	}
+
+	.music-page__list {
+		padding: 1.75rem 2rem;
+	}
+
+	.music-page__list-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+
+	.music-page__list-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 700;
+	}
+
+	.music-page__list-count {
+		color: var(--tl-muted, #64748b);
+		font-size: 0.8rem;
+	}
+
+	.music-page__list ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.music-page__track {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		width: 100%;
+		padding: 0.8rem 1rem;
+		border: 1px solid transparent;
+		border-radius: 1rem;
+		background: transparent;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.music-page__track:hover {
+		border-color: rgb(129 140 248 / 0.4);
+		background: rgb(255 255 255 / 0.55);
+		transform: translateX(4px);
+	}
+
+	html.dark .music-page__track:hover {
+		background: rgb(255 255 255 / 0.06);
+	}
+
+	.music-page__track-index {
+		color: var(--tl-accent, #6366f1);
+		font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.music-page__track-info {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.music-page__track-info strong {
+		font-size: 0.92rem;
+	}
+
+	.music-page__track-info small {
+		color: var(--tl-muted, #64748b);
+		font-size: 0.75rem;
+	}
+
+	.music-page__track > svg {
+		color: var(--tl-accent, #6366f1);
+		font-size: 1.35rem;
+	}
+
+	.music-page__hint {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		margin: 0;
+		color: var(--tl-muted, #64748b);
+		font-size: 0.8rem;
+	}
+
+	@media (max-width: 767px) {
+		.music-page__player {
+			padding: 1.5rem 1.25rem;
+		}
+
+		.music-page__list {
+			padding: 1.25rem 1.25rem;
+		}
+	}
+</style>

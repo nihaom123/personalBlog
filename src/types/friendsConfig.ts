@@ -15,4 +15,9 @@ export type FriendsPageConfig = {
 	showCustomContent?: boolean; // 是否显示自定义内容（friends.mdx）
 	showComment?: boolean; // 是否显示评论区，默认 true
 	randomizeSort?: boolean; // 是否打乱排序，如果为 true，将忽略 weight，随机排序
+	particles?: {
+		enabled?: boolean; // 是否启用 Canvas 粒子背景，默认 true
+		density?: number; // 粒子密度倍数，默认 1
+		interactive?: boolean; // 是否响应鼠标，默认 true
+	};
 };

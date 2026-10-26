@@ -11,7 +11,7 @@
 | --- | --- | --- | --- | --- |
 | TASK-001 | 建立运营目录、草稿规范与排期文件 | 编码/内容 | 无 | P0 |
 | TASK-002 | 每日定时发布工作流（3/4/3） | 编码 | 001 | P0 |
-| TASK-003 | Twikoo 评论部署与前端接入 | 编码/运维 | 博主注册 Atlas | P0 |
+| TASK-003 | 评论系统部署与前端接入 | 编码/运维 | 无 | P0 |
 | TASK-004 | Cloudflare Web Analytics 接入 | 运维 | 无 | P1 |
 | TASK-005 | 四栏目导航与归档页核对 | 编码/内容 | 无 | P1 |
 | TASK-006 | 首周 70 篇稿件生产 | 内容 | 001 | P0 |
@@ -88,28 +88,28 @@ gh run list --workflow=daily-publish.yml
 
 ## TASK-003
 
-**Goal**：上线 Twikoo 评论，读者可匿名留言，数据持久化。
+**Goal**：上线 Waline 评论，读者可匿名留言，数据持久化。
 
-**Context**：`src/config/commentConfig.ts` 当前 `type: "none"`；`twikoo.envId` 为示例地址。站点部署在 Cloudflare Workers（服务名 `personalblog`）。
+**Context**：`src/config/commentConfig.ts` 中 `type: "waline"`；站点与评论服务均部署在 Cloudflare Workers。
 
 **Scope**
-- 指导博主注册 MongoDB Atlas 免费集群、建库 `twikoo`、创建读写用户、配置网络访问白名单。
-- 在 Cloudflare 部署 Twikoo 服务端（独立 Worker，绑定 `twikoo.05221024.xyz`），环境变量存 `MONGODB_URI`。
-- 修改 `commentConfig`：`type: "twikoo"`、`envId` 指向 Worker、`jsUrl` 换国内镜像、`visitorCount: true`。
+- 在 Cloudflare 部署 Waline 服务端（独立 Worker，绑定 `waline.05221024.xyz`），数据库使用 Cloudflare D1，按 `schema.sql` 初始化。
+- 修改 `commentConfig`：`serverURL` 指向 Worker、`visitorCount: true`。
+- 留言板图片上传走 Waline Worker 的 `/api/upload` 代理到 Cloudflare-ImgBed。
 
 **Non-goals**：不迁移历史评论；不做第三方 OAuth 登录。
 
 **Implementation Notes**
 - 自定义域名与主站 Worker 不要复用，避免 `run_worker_first` 冲突。
-- 若 Atlas 未开 0.0.0.0/0 白名单，Worker 连接会超时——这是最常见失败点。
-- 开启 Twikoo 后台管理密码，防止未授权管理。
+- 数据库连接通过 D1 binding 注入，密钥存 Worker 环境变量。
+- 开启后台管理密码，防止未授权管理。
 
 **Acceptance Criteria**
 - 文章页出现评论框；匿名提交后刷新仍在；不同文章评论隔离。
 - 访问量统计正常增长。
 - 评论接口返回 200，无 CORS 报错。
 
-**Verification**：线上任意文章提交一条测试评论 → 换浏览器/隐身窗口确认可见 → Twikoo 管理面板可见。
+**Verification**：线上任意文章提交一条测试评论 → 换浏览器/隐身窗口确认可见 → `https://waline.05221024.xyz/ui` 管理面板可见。
 
 ## TASK-004
 

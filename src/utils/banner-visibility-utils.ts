@@ -17,6 +17,7 @@ export interface BannerVisibilityContext {
 	isPostPage: boolean;
 	title?: string;
 	bannerPostMeta?: BannerPostMeta;
+	pathname?: string;
 }
 
 export interface BannerVisibilityState {
@@ -94,6 +95,7 @@ export function getBannerVisibilityState(
 		isPostPage,
 		title,
 		bannerPostMeta,
+		pathname,
 	} = ctx;
 
 	const isBannerMode = backgroundWallpaper.mode === "banner";
@@ -160,7 +162,7 @@ export function getBannerVisibilityState(
 		!isPostPage &&
 		!!title;
 
-	const backgroundImages = getBackgroundImages();
+	const backgroundImages = getBackgroundImages(pathname);
 	const configQuality = getImageQuality();
 	const mobileQuality = Math.round(configQuality * 0.9);
 	const bannerCarouselEnabledDefault =

@@ -1,29 +1,15 @@
 import type { CommentConfig } from "../types/commentConfig";
 
 export const commentConfig: CommentConfig = {
-	// 评论系统类型: none, twikoo, waline, giscus, disqus, artalk，默认为none，即不启用评论系统
-	type: "twikoo",
-
-	//twikoo评论系统配置
-	twikoo: {
-		envId: "https://twikoo.05221024.xyz",
-		// 设置 Twikoo 评论系统语言
-		lang: "zh-CN",
-		// 是否启用文章访问量统计功能
-		visitorCount: true,
-		// Twikoo JS 文件地址，支持 CDN 链接
-		// 中国推荐1: https://registry.npmmirror.com/twikoo/1.7.14/files/dist/twikoo.min.js
-		// 中国推荐2: https://s4.zstatic.net/npm/twikoo@1.7.14/dist/twikoo.min.js
-		// 国际推荐: https://cdn.jsdelivr.net/npm/twikoo@1.7.14/dist/twikoo.min.js
-		jsUrl: "https://registry.npmmirror.com/twikoo/2.0.17/files/dist/twikoo.min.js",
-		// Twikoo 自定义 CSS 文件地址，为空则不加载
-		cssUrl: "/assets/css/twikoo-custom.css",
-	},
+	// 评论系统类型: none, waline, giscus, disqus, artalk，默认为none，即不启用评论系统
+	// 文章评论区与 /guestbook/ 留言板统一使用 Waline
+	type: "waline",
 
 	//waline评论系统配置
+	// 文章评论区（官方默认 UI）与 /guestbook/ 聊天式留言板共用同一套 Waline 后端
 	waline: {
-		// waline 后端服务地址
-		serverURL: "https://waline.vercel.app",
+		// waline 后端服务地址（部署好自己的 Waline 后改成 https://你的域名）
+		serverURL: "https://waline.05221024.xyz",
 		// 设置 Waline 评论系统语言
 		lang: "zh-CN",
 		// 设置 Waline 评论系统表情地址
@@ -39,6 +25,8 @@ export const commentConfig: CommentConfig = {
 		login: "enable",
 		// 是否启用文章访问量统计功能
 		visitorCount: true,
+		// 留言板图片上传接口（Waline Worker 代理 CloudFlare-ImgBed）
+		imageUploadURL: "https://waline.05221024.xyz/api/upload",
 	},
 
 	// artalk评论系统配置

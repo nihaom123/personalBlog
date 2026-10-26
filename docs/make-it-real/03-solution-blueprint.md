@@ -42,7 +42,7 @@ GitHub Actions 定时任务（07:30 / 12:30 / 20:30）
 Cloudflare Workers Builds（pnpm build → wrangler deploy）
       │
       ▼
-线上站点 05221024.xyz  ←→  Twikoo 评论（Worker + MongoDB Atlas）
+线上站点 05221024.xyz  ←→  Waline 评论（Worker + D1）
       │
       ▼
 Cloudflare Web Analytics → 周日复盘
@@ -70,11 +70,11 @@ Cloudflare Web Analytics → 周日复盘
 - 逻辑：读取排期 → 选出当日该批次草稿 → 修改 frontmatter → commit（`chore: publish batch X`）→ push。
 - 安全：脚本幂等；无候选则直接退出，不产生空提交。
 
-### 3. 评论系统（Twikoo）
+### 3. 评论系统（Waline）
 
-- 后端：Cloudflare Worker 部署 Twikoo 服务端，数据库 MongoDB Atlas 免费层。
-- 前端：`src/config/commentConfig.ts` 将 `type` 改为 `"twikoo"`，`envId` 填 Worker 地址，`jsUrl` 用国内镜像。
-- 域名：建议 `twikoo.05221024.xyz`，与主站 Worker 分离，避免路由冲突。
+- 后端：Cloudflare Worker 部署 Waline 服务端，数据库使用 Cloudflare D1。
+- 前端：`src/config/commentConfig.ts` 中 `type: "waline"`，`serverURL` 指向 Worker 地址。
+- 域名：`waline.05221024.xyz`，与主站 Worker 分离，避免路由冲突。
 
 ### 4. 统计分析
 
@@ -91,22 +91,22 @@ Cloudflare Web Analytics → 周日复盘
 
 - 图片：优先使用 `src/assets` 本地图；若用网络图，需确认授权，禁止直接引用热搜原图。
 - 选题与排期文件：`docs/operations/` 下按周归档。
-- 评论数据：MongoDB Atlas（不入 git）。
+- 评论数据：Cloudflare D1（不入 git）。
 - 统计：Cloudflare Analytics（不入 git）。
 
 ## 集成或工具
 
 - GitHub Actions（定时 + 提交）
 - Cloudflare Workers Builds（构建部署）
-- Twikoo Worker + MongoDB Atlas
+- Waline Worker + Cloudflare D1
 - Cloudflare Web Analytics
 - 现有 Firefly 能力：sitemap、RSS/Atom、OG 图、Pagefind 搜索
 
 ## 安全、隐私或执行约束
 
-- 仓库内不得出现任何 Key、连接串、Token；Twikoo 的 MongoDB URI 存于 Cloudflare Worker 环境变量。
+- 仓库内不得出现任何 Key、连接串、Token；Waline 的密钥存于 Cloudflare Worker 环境变量。
 - Action 使用最小权限：`contents: write` 仅用于发布任务分支。
-- 评论开启防垃圾（Twikoo 内置 + 可选验证码/频率限制）。
+- 评论开启防垃圾（Waline 反垃圾 + 可选验证码/频率限制）。
 - 内容红线见 [02-scope-and-requirements.md](02-scope-and-requirements.md#硬性红线任一命中即弃稿)。
 
 ## 部署、发布或交付计划
@@ -115,7 +115,7 @@ Cloudflare Web Analytics → 周日复盘
 | --- | --- | --- |
 | D1 | 草稿规范 + 目录准备 | 一篇样例草稿构建后不显示 |
 | D2 | 定时工作流上线 | 手动 dispatch 成功发布一批 |
-| D3 | Twikoo 上线 | 线上可评论并存库 |
+| D3 | Waline 上线 | 线上可评论并存库 |
 | D4 | Analytics 上线 | 后台可见访问数据 |
 | D5 | 首周 70 篇入库 | 抽检通过 |
 | D6 | 连续 7 天自动发布 | 无构建失败 |

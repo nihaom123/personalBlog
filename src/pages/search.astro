@@ -19,10 +19,12 @@ const description = "";
 <script is:inline define:vars={{ scriptUrl: url('/pagefind/pagefind.js') }}>
     if (!window.pagefind) {
         async function loadPagefind() {
+            if (window.pagefind) return;
             const url = scriptUrl.replace(/\/$/, "")
             try {
                 const response = await fetch(url, { method: 'HEAD' });
                 if (response.status !== 200) {
+                    document.dispatchEvent(new Event('pagefindloaderror'));
                     return;
                 }
                 const pagefind = await import(scriptUrl);
@@ -30,12 +32,14 @@ const description = "";
                     "excerptLength": 20
                 });
                 window.pagefind = pagefind;
-                window.dispatchEvent(new Event('pagefindready'));
+                document.dispatchEvent(new Event('pagefindready'));
             } catch (error) {
                 console.warn("Pagefind script not found or failed to load.");
-                window.dispatchEvent(new Event('pagefindloaderror'));
+                document.dispatchEvent(new Event('pagefindloaderror'));
             }
         }
+        // AdvancedSearch / Search.svelte 都通过这个入口懒加载，内页没有导航栏时也能工作
+        window.__loadPagefind = loadPagefind;
         loadPagefind();
     }
 </script>

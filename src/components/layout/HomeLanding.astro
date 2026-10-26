@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import Announcement from "@/components/widget/Announcement.astro";
 import { profileConfig, siteConfig } from "@/config";
 import { getEnabledFriends } from "@/config/friendsConfig";
 
@@ -136,6 +137,10 @@ const pixels = Array.from({ length: pixelCols * pixelRows }, (_, index) => {
 				}
 			</div>
 		</header>
+
+		<section class="home-announcement" aria-label="公告">
+			<Announcement />
+		</section>
 
 		<section class="block" id="site">
 			<h2 class="block-title">
@@ -372,6 +377,12 @@ const pixels = Array.from({ length: pixelCols * pixelRows }, (_, index) => {
 		background: var(--pixel-color);
 		animation: pixelPulse 2.4s ease-in-out infinite;
 		animation-delay: var(--pixel-delay);
+	}
+
+	/* 公告：首页中部 */
+	.home-announcement {
+		width: min(100%, 560px);
+		margin: 28px auto 0;
 	}
 
 	/* 区块 */

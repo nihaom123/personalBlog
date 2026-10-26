@@ -2,6 +2,7 @@
 import { getEntry, render } from "astro:content";
 import Comment from "@components/comment/index.astro";
 import Markdown from "@components/common/Markdown.astro";
+import FriendParticles from "@components/features/FriendParticles.svelte";
 import { Icon } from "astro-icon/components";
 import {
 	commentConfig,
@@ -48,9 +49,10 @@ const description =
   <div
     class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32"
   >
-    <div class="card-base z-10 px-9 py-6 relative w-full">
+    <div class="card-base z-10 px-9 py-6 relative w-full overflow-hidden">
+      <FriendParticles client:visible />
       <!-- 页面标题和描述 -->
-      <div class="mb-4">
+      <div class="relative z-10 mb-4">
         <div class="page-heading">
           <div class="page-icon" aria-hidden="true">
             <Icon name="material-symbols:group" />
@@ -65,7 +67,7 @@ const description =
       <!-- 搜索框 -->
       {
         items.length > 0 && (
-          <friend-filter class="mb-6">
+          <friend-filter class="relative z-10 mb-6">
             <div class="relative mb-3">
               <Icon
                 name="material-symbols:search"
@@ -99,7 +101,7 @@ const description =
         )
       }
 
-      <div class="friends-grid my-4">
+      <div class="friends-grid relative z-10 my-4">
         {
           items.length === 0 && (
             <div class="col-span-full flex flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
@@ -167,7 +169,7 @@ const description =
       </div>
 
       {/* 搜索无结果提示 */}
-      <div class="friends-empty hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
+      <div class="friends-empty relative z-10 hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
         <Icon name="material-symbols:search-off-rounded" class="text-4xl mb-3" />
         <div class="text-sm">{i18n(I18nKey.searchNoResults)}</div>
       </div>
